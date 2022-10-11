@@ -204,6 +204,7 @@
 -r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.VRModule.dll"
 -r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.WindModule.dll"
 -r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll"
+-r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll"
 -r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll"
 -r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/Microsoft.Win32.Primitives.dll"
 -r:"D:/GameEngines/Unity/2022.1.16f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/netstandard.dll"
