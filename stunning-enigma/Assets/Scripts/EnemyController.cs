@@ -31,7 +31,7 @@ public class EnemyController : MonoBehaviour
     // Keep starting position if need to reset
     private void Start()
     {
-        startingPosition = previousPosition = transform.position;   
+        startingPosition = previousPosition = transform.position;
     }
 
     //The enemy do movement in lateupdate so that it takes places after player input.
@@ -40,7 +40,7 @@ public class EnemyController : MonoBehaviour
         if (!PlayerController.IsWaitingForEnemy)
             return;
 
-        if(!moving)
+        if (!moving)
             StartCoroutine(Move());
     }
 
@@ -51,9 +51,14 @@ public class EnemyController : MonoBehaviour
         previousPosition = transform.position;
         while (!(howManyMoves == 2))
         {
-            if (MoveHorizontally())
+            var moveDirection = MoveDirection();
+
+            if (moveDirection.Equals(Vector3.zero))
+                break;
+
+            if (Move(Vector3.right * Vector3.Dot(moveDirection, Vector3.right)))
                 howManyMoves++;
-            else if (MoveVertically())
+            else if (Move(Vector3.forward * Vector3.Dot(moveDirection, Vector3.forward)))
                 howManyMoves++;
             else
                 //Break if the enemy cant move anymore.
@@ -62,67 +67,32 @@ public class EnemyController : MonoBehaviour
             // Also good for updating to the correct time when moved.
             yield return new WaitForSeconds(0.2f);
         }
-        
+
         howManyMoves = 0;
         PlayerController.IsWaitingForEnemy = false;
         moving = false;
     }
 
-    //Horizontal movment one tile. Check if we should go left or right depending on where the player is.
-    //If the enemy has the same x value, the enemy dooes not move. If the enemy is standing on a tile that does not have the
-    //correct direction the enemy wants to go, the enemy does not move.
-    private bool MoveHorizontally() 
+    private Vector3 MoveDirection() 
     {
         var playerPosition = player.transform.position;
+        var enemyPosition = transform.position;
 
-        var playerXPosition = playerPosition.x;
-        var enemyXPosition = transform.position.x;
+        var differencePosition = playerPosition - enemyPosition;
 
-        var differenceX = playerXPosition - enemyXPosition;
-
-        if (differenceX == 0)
-            return false;
-
-        var newXValue = differenceX > 0 ? 10 : -10;
-
-        if (newXValue < 0 && !currentStandingTile.canGoMinusX)
-            return false;
-
-        if (newXValue > 0 && !currentStandingTile.canGoPlusX)
-            return false;
-
-        var newPosition = transform.position;
-        newPosition.x += newXValue;
-
-        transform.position = newPosition;
-        return true;
+        return differencePosition;
     }
 
-    //Same as horizontall, but for up and down. Happens only the horizontal returns false twice.
-    private bool MoveVertically()
+    // Direction false Horizontal, true Vertical
+    private bool Move(Vector3 direction)
     {
-        var playerPosition = player.transform.position;
+        direction.Normalize();
 
-        var playerZPosition = playerPosition.z;
-        var enemyZPosition = transform.position.z;
-
-        var differenceZ = playerZPosition - enemyZPosition;
-
-        if (differenceZ == 0)
+        if (!currentStandingTile.CanGoDirection(direction))
             return false;
 
-        var newZValue = differenceZ > 0 ? 10 : -10;
-
-        if (newZValue < 0 && !currentStandingTile.canGoMinusZ)
-            return false;
-
-        if (newZValue > 0 && !currentStandingTile.canGoPlusZ)
-            return false;
-
-        var newPosition = transform.position;
-        newPosition.z += newZValue;
-
-        transform.position = newPosition;
+        transform.position += direction*10;
+        
         return true;
     }
 
@@ -130,9 +100,7 @@ public class EnemyController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Tile"))
-        {
             currentStandingTile = other.gameObject.GetComponent<Tile>();
-        }
     }
 
     private void OnResetHandler()

@@ -29,47 +29,26 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // Up is positive z, down is negative z, right is positve x, and left is negative x.
-        // I change 10 instead of one because it seemed to be easier to handle larger gameobjects.
-        // But that is an aftereffect of trying to play around with rigidbody and collision detection.
+        if (IsWaitingForEnemy)
+            return;
 
-        float newXValue = 0;
+        Vector3 moveDirection = Vector3.zero;
 
-        // The tile the player is standing on has to have the bool for the direction you want to go enabled for it to work.
-        if (Input.GetKeyDown(KeyCode.A) && currentStandingTile.canGoMinusX)
-            newXValue = -10;
-        else if(Input.GetKeyDown(KeyCode.D) && currentStandingTile.canGoPlusX)
-            newXValue = 10;
+        if (Input.GetKeyDown(KeyCode.A) && moveDirection.Equals(Vector3.zero))
+            moveDirection = Vector3.left;
 
-        float newZValue = 0;
+        if (Input.GetKeyDown(KeyCode.D) && moveDirection.Equals(Vector3.zero))
+            moveDirection = Vector3.right;
 
-        if (Input.GetKeyDown(KeyCode.S) && currentStandingTile.canGoMinusZ)
-            newZValue = -10;
-        else if (Input.GetKeyDown(KeyCode.W) && currentStandingTile.canGoPlusZ)
-            newZValue = 10;
+        if (Input.GetKeyDown(KeyCode.S) && moveDirection.Equals(Vector3.zero))
+            moveDirection = Vector3.back;
 
-        // The bool waitingfor enemy is true if it is the enemys turn to move.
-        if (newXValue != 0 && !IsWaitingForEnemy)
+        if (Input.GetKeyDown(KeyCode.W) && moveDirection.Equals(Vector3.zero))
+            moveDirection = Vector3.forward;
+
+        if (currentStandingTile.CanGoDirection(moveDirection) && !moveDirection.Equals(Vector3.zero))
         {
-            //Keep previous position in case of undo click
-            previousPosition = transform.position;
-            var newPosition = previousPosition;
-
-            newPosition.x += newXValue;
-
-            transform.position = newPosition;
-            IsWaitingForEnemy = true;
-        }
-
-        // Same as above, but for z. Horizontal movment comes before vertical because it made sense with the other rules of the game.
-        if (newZValue != 0 && !IsWaitingForEnemy)
-        {
-            previousPosition = transform.position;
-            var newPosition = previousPosition;
-
-            newPosition.z += newZValue;
-
-            transform.position = newPosition;
+            transform.position += moveDirection * 10;
             IsWaitingForEnemy = true;
         }
     }
