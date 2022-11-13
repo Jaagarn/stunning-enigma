@@ -10,3 +10,5 @@ Focus on recreating the game mechanics, UI and look is not equally important (ba
 
 This is the game that I recreated:
 https://estivalet.github.io/theseus-minotaur/
+
+And this is the compiled version that i created: https://play.unity.com/mg/other/webgl-builds-244734
